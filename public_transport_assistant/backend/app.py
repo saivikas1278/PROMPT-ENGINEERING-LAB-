@@ -2,6 +2,7 @@ from functools import wraps
 import os
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import init_db, insert_sample_data, get_locations, search_routes, get_route_by_id, get_all_routes, add_route, update_route, delete_route
 from route_service import get_graphhopper_route
@@ -9,6 +10,7 @@ from route_service import get_graphhopper_route
 load_dotenv()
 
 app = Flask(__name__, template_folder="../frontend/templates", static_folder="../frontend/static")
+CORS(app)
 app.secret_key = 'super_secret_college_key'
 
 # Initialize DB on startup
