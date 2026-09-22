@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-card" style="max-width: 600px; margin: 0 auto;">
+    <h2 style="color: var(--primary); margin-bottom: 20px;">Add New Route</h2>
+    
+    <form action="/admin/routes/add" method="POST">
+        <div class="form-group">
+            <label for="bus_number">Bus Number:</label>
+            <input type="text" name="bus_number" id="bus_number" required>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label for="source">Source:</label>
+                <input type="text" name="source" id="source" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="destination">Destination:</label>
+                <input type="text" name="destination" id="destination" required>
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label for="distance">Distance (km):</label>
+                <input type="number" step="0.1" min="0.1" name="distance" id="distance" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="travel_time">Travel Time (min):</label>
+                <input type="number" min="1" name="travel_time" id="travel_time" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="fare">Fare (₹):</label>
+                <input type="number" step="0.5" min="0" name="fare" id="fare" required>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button type="submit" class="btn-primary" style="flex: 1;">Save Route</button>
+            <a href="/admin/routes" class="btn-primary" style="flex: 1; background-color: var(--dark); text-align: center; text-decoration: none;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

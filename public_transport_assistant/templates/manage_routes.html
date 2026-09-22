@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Manage Routes</h2>
+    <div>
+        <a href="/admin/routes/add" class="btn-primary" style="text-decoration: none; display: inline-block; width: auto; padding: 8px 15px;">+ Add Route</a>
+        <a href="/admin/dashboard" class="btn-primary" style="background-color: var(--dark); text-decoration: none; display: inline-block; width: auto; padding: 8px 15px;">Dashboard</a>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div style="background-color: var(--success); color: white; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center;">
+      {% for message in messages %}
+        {{ message }}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="search-card" style="overflow-x: auto; padding: 0;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: var(--gray-100); border-bottom: 2px solid var(--gray-300);">
+                <th style="padding: 12px; text-align: left;">ID</th>
+                <th style="padding: 12px; text-align: left;">Bus No</th>
+                <th style="padding: 12px; text-align: left;">Source</th>
+                <th style="padding: 12px; text-align: left;">Destination</th>
+                <th style="padding: 12px; text-align: left;">Dist (km)</th>
+                <th style="padding: 12px; text-align: left;">Time (min)</th>
+                <th style="padding: 12px; text-align: left;">Fare (₹)</th>
+                <th style="padding: 12px; text-align: center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for route in routes %}
+            <tr style="border-bottom: 1px solid var(--gray-100);">
+                <td style="padding: 12px;">{{ route.id }}</td>
+                <td style="padding: 12px; font-weight: bold;">{{ route.bus_number }}</td>
+                <td style="padding: 12px;">{{ route.source }}</td>
+                <td style="padding: 12px;">{{ route.destination }}</td>
+                <td style="padding: 12px;">{{ route.distance }}</td>
+                <td style="padding: 12px;">{{ route.travel_time }}</td>
+                <td style="padding: 12px;">{{ route.fare }}</td>
+                <td style="padding: 12px; text-align: center;">
+                    <a href="/admin/routes/edit/{{ route.id }}" style="color: var(--primary); text-decoration: none; margin-right: 10px;">Edit</a>
+                    <form action="/admin/routes/delete/{{ route.id }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this route?');">
+                        <button type="submit" style="background: none; border: none; color: var(--danger); cursor: pointer; padding: 0; font-size: 1rem; font-weight: bold;">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

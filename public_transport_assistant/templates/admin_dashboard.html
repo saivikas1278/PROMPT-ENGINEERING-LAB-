@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>Admin Dashboard</h2>
+    <a href="{{ url_for('admin_logout') }}" class="btn-primary" style="background-color: var(--danger); width: auto; padding: 8px 16px; text-decoration: none;">Logout</a>
+</div>
+
+<div class="summary-cards">
+    <div class="summary-card" style="border-top-color: var(--primary);">
+        <div class="badge">TOTAL ROUTES</div>
+        <h3>{{ total_routes }}</h3>
+    </div>
+    <div class="summary-card" style="border-top-color: var(--success);">
+        <div class="badge">TOTAL LOCATIONS</div>
+        <h3>{{ total_locations }}</h3>
+    </div>
+</div>
+
+<div class="search-card" style="margin-top: 30px; text-align: center;">
+    <h3>Quick Actions</h3>
+    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+        <a href="/admin/routes/add" class="btn-primary" style="width: auto; text-decoration: none;">Add Route</a>
+        <a href="/admin/routes" class="btn-primary" style="width: auto; background-color: var(--dark); text-decoration: none;">View Routes</a>
+    </div>
+</div>
+{% endblock %}

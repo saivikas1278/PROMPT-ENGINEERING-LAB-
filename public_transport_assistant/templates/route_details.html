@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-card" style="max-width: 600px; margin: 0 auto;">
+    <h2 style="color: var(--primary); text-align: center; margin-bottom: 20px;">Bus No: {{ route.bus_number }}</h2>
+    
+    <div style="background: var(--gray-100); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <p><strong>From:</strong><br>{{ route.source }}</p>
+        <p><strong>To:</strong><br>{{ route.destination }}</p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+        <div>
+            <p><strong>Distance:</strong><br>{{ route.distance }} km</p>
+            <p><strong>Travel Time:</strong><br>{{ route.travel_time }} minutes</p>
+        </div>
+        <div>
+            <p><strong>Fare:</strong><br>₹{{ route.fare }}</p>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 30px;">
+        <h3>Stops:</h3>
+        <ol style="color: var(--dark); line-height: 1.8;">
+            <li>{{ route.source }}</li>
+            {% if "SRKR" in route.source and "Bhimavaram" in route.destination %}
+            <li>Vishnupuram</li>
+            {% endif %}
+            <li>{{ route.destination }}</li>
+        </ol>
+    </div>
+    
+    <div style="text-align: center;">
+        <a href="javascript:history.back()" class="btn-primary" style="text-decoration: none; display: inline-block; width: auto;">Back to Routes</a>
+    </div>
+</div>
+{% endblock %}
