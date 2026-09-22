@@ -94,8 +94,8 @@ def search_routes(source, destination):
     cursor = conn.cursor()
     cursor.execute('''
         SELECT * FROM routes
-        WHERE source = ? AND destination = ?
-    ''', (source, destination))
+        WHERE (source = ? AND destination = ?) OR (source = ? AND destination = ?)
+    ''', (source, destination, destination, source))
     routes = cursor.fetchall()
     conn.close()
     return routes

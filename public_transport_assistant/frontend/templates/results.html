@@ -12,6 +12,24 @@
 </div>
 {% else %}
 
+{% if route_geometry %}
+<div id="map" style="height: 400px; margin-bottom: 20px; border-radius: 8px;"></div>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var map = L.map('map');
+        var geojsonFeature = {{ route_geometry | safe }};
+        var geojsonLayer = L.geoJSON(geojsonFeature, {
+            style: function (feature) {
+                return {color: "#007BFF", weight: 5, opacity: 0.8};
+            }
+        }).addTo(map);
+        map.fitBounds(geojsonLayer.getBounds());
+    });
+</script>
+{% endif %}
+
 <div class="summary-cards">
     {% if fastest %}
     <div class="summary-card fastest">

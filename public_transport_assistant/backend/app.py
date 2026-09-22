@@ -1,9 +1,14 @@
 from functools import wraps
+import os
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import init_db, insert_sample_data, get_locations, search_routes, get_route_by_id, get_all_routes, add_route, update_route, delete_route
+from route_service import get_graphhopper_route
 
-app = Flask(__name__)
+load_dotenv()
+
+app = Flask(__name__, template_folder="../frontend/templates", static_folder="../frontend/static")
 app.secret_key = 'super_secret_college_key'
 
 # Initialize DB on startup
@@ -36,9 +41,18 @@ def search():
         return "Source and destination are required", 400
         
     routes = search_routes(source, destination)
-    
     routes_list = [dict(r) for r in routes]
+    route_geometry = None
     
+    if routes_list:
+        graphhopper_data = get_graphhopper_route(source, destination)
+        if graphhopper_data:
+            for r in routes_list:
+                r["distance"] = graphhopper_data["distance"]
+                r["travel_time"] = graphhopper_data["travel_time"]
+            import json
+            route_geometry = json.dumps(graphhopper_data["path"])
+            
     fastest_route = None
     cheapest_route = None
     
@@ -52,7 +66,7 @@ def search():
             if r['id'] == cheapest_route['id']:
                 r['is_cheapest'] = True
                 
-    return render_template('results.html', routes=routes_list, source=source, destination=destination, fastest=fastest_route, cheapest=cheapest_route)
+    return render_template('results.html', routes=routes_list, source=source, destination=destination, fastest=fastest_route, cheapest=cheapest_route, route_geometry=route_geometry)
 
 @app.route('/route/<int:route_id>')
 def route_details(route_id):
