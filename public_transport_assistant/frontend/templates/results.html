@@ -1,73 +1,131 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="results-header">
-    <h2>Routes from {{ source }} to {{ destination }}</h2>
+<div class="results-header-banner">
+    <div class="journey-title">
+        <i data-lucide="map-pin"></i> {{ source }} 
+        <i data-lucide="arrow-right" style="color: var(--text-muted); width: 16px;"></i> 
+        <i data-lucide="map"></i> {{ destination }}
+    </div>
+    <a href="{{ url_for('home') }}" class="btn btn-secondary">
+        <i data-lucide="search"></i> Change Search
+    </a>
 </div>
 
 {% if not routes %}
-<div class="search-card" style="text-align: center;">
-    <p>No routes found for this journey.</p>
-    <a href="{{ url_for('home') }}" class="btn-primary" style="display: inline-block; width: auto; margin-top: 20px;">Try Another Search</a>
+<div class="empty-state">
+    <div class="empty-icon">
+        <i data-lucide="bus-off"></i>
+    </div>
+    <h3>No routes found</h3>
+    <p>We couldn't find a route for this journey from <strong>{{ source }}</strong> to <strong>{{ destination }}</strong>. Try selecting another source or destination.</p>
+    <a href="{{ url_for('home') }}" class="btn btn-primary">Try Another Search</a>
 </div>
 {% else %}
 
-{% if route_geometry %}
-<div id="map" style="height: 400px; margin-bottom: 20px; border-radius: 8px;"></div>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var map = L.map('map');
-        var geojsonFeature = {{ route_geometry | safe }};
-        var geojsonLayer = L.geoJSON(geojsonFeature, {
-            style: function (feature) {
-                return {color: "#007BFF", weight: 5, opacity: 0.8};
-            }
-        }).addTo(map);
-        map.fitBounds(geojsonLayer.getBounds());
-    });
-</script>
+{% if fastest or cheapest %}
+<div class="comparison-summary">
+    {% if fastest %}
+    <div class="comp-badge fastest">
+        <i data-lucide="zap" style="width: 14px;"></i> Fastest: Bus {{ fastest.bus_number }} &bull; {{ fastest.travel_time }} min
+    </div>
+    {% endif %}
+    {% if cheapest %}
+    <div class="comp-badge cheapest">
+        <i data-lucide="banknote" style="width: 14px;"></i> Cheapest: Bus {{ cheapest.bus_number }} &bull; ₹{{ cheapest.fare }}
+    </div>
+    {% endif %}
+</div>
 {% endif %}
 
-<div class="summary-cards">
-    {% if fastest %}
-    <div class="summary-card fastest">
-        <div class="badge">⭐ FASTEST</div>
-        <h3>{{ fastest.travel_time }} min</h3>
-        <p>Bus {{ fastest.bus_number }}</p>
-    </div>
-    {% endif %}
+<div style="display: grid; grid-template-columns: 1fr; gap: 40px;">
     
-    {% if cheapest %}
-    <div class="summary-card cheapest">
-        <div class="badge">💰 CHEAPEST</div>
-        <h3>₹{{ cheapest.fare }}</h3>
-        <p>Bus {{ cheapest.bus_number }}</p>
+    <div class="results-grid">
+        {% for route in routes %}
+        <div class="route-card {% if route.is_fastest %}is-fastest{% endif %} {% if route.is_cheapest %}is-cheapest{% endif %}">
+            
+            <div class="route-info-main">
+                <div class="route-bus-title">
+                    <i data-lucide="bus" style="color: var(--primary);"></i> Bus {{ route.bus_number }}
+                    
+                    <div style="display: flex; gap: 8px; margin-left: 12px;">
+                        {% if route.is_fastest %}
+                        <span class="comp-badge fastest" style="padding: 2px 8px; font-size: 0.75rem;"><i data-lucide="zap" style="width:12px;"></i> FASTEST</span>
+                        {% endif %}
+                        {% if route.is_cheapest %}
+                        <span class="comp-badge cheapest" style="padding: 2px 8px; font-size: 0.75rem;"><i data-lucide="banknote" style="width:12px;"></i> CHEAPEST</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="route-stats-row">
+                    <div class="route-stat">
+                        <i data-lucide="clock" style="width:16px;"></i> {{ route.travel_time }} min
+                    </div>
+                    <div class="route-stat">
+                        <i data-lucide="ruler" style="width:16px;"></i> {{ route.distance }} km
+                    </div>
+                    <div class="route-stat">
+                        <i data-lucide="map-pin" style="width:16px;"></i> {{ route.source }} ➔ {{ route.destination }}
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
+                <div class="route-price">₹{{ route.fare }}</div>
+                <a href="/route/{{ route.id }}" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">
+                    View Details <i data-lucide="arrow-right" style="width: 16px;"></i>
+                </a>
+            </div>
+            
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if route_geometry %}
+    <div class="map-panel">
+        <div class="map-header">
+            <h3><i data-lucide="map" style="color: var(--primary);"></i> Route Map</h3>
+            {% if routes|length > 0 %}
+                <div class="map-stats">{{ routes[0].distance }} km Route Path</div>
+            {% endif %}
+        </div>
+        <div id="map"></div>
+        <div id="route-data" style="display: none;">{{ route_geometry | safe }}</div>
+        
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var map = L.map('map');
+                var routeDataElement = document.getElementById('route-data');
+                var geojsonFeature = null;
+                
+                try {
+                    geojsonFeature = JSON.parse(routeDataElement.textContent);
+                } catch(e) {
+                    console.error("Could not parse route geometry");
+                }
+                
+                if (geojsonFeature) {
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© OpenStreetMap'
+                    }).addTo(map);
+
+                    var geojsonLayer = L.geoJSON(geojsonFeature, {
+                        style: function (feature) {
+                            return {color: "#2563EB", weight: 5, opacity: 0.8};
+                        }
+                    }).addTo(map);
+                    map.fitBounds(geojsonLayer.getBounds());
+                }
+            });
+        </script>
     </div>
     {% endif %}
+
 </div>
 
-<div class="route-list">
-    {% for route in routes %}
-    <div class="route-card {% if route.is_fastest %}highlight-fast{% endif %} {% if route.is_cheapest %}highlight-cheap{% endif %}">
-        <div class="route-info">
-            <div class="bus-number">Bus {{ route.bus_number }}</div>
-            <div class="route-stats">
-                <span>🛣️ Distance: {{ route.distance }} km</span>
-                <span>⏱️ Travel Time: {{ route.travel_time }} minutes</span>
-                <span>💵 Fare: ₹{{ route.fare }}</span>
-            </div>
-        </div>
-        <div class="route-action">
-            <a href="/route/{{ route.id }}" class="btn-primary">View Details</a>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-
-<div style="text-align: center; margin-top: 30px;">
-    <a href="{{ url_for('home') }}" style="color: var(--primary); text-decoration: none; font-weight: bold;">&larr; Back to Search</a>
-</div>
 {% endif %}
 {% endblock %}

@@ -1,34 +1,77 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="hero">
-    <h1>Public Transport & Route Assistant</h1>
-    <p class="subtitle">Plan Smarter • Travel Better • Reach Faster</p>
-</div>
+<section class="hero-section">
+    <h1>Find the Right Route for Your Journey</h1>
+    <p>Compare bus routes, travel time and fares to find a journey that works for you.</p>
+</section>
 
-<div class="search-card">
-    <form action="{{ url_for('search') }}" method="POST">
-        <div class="form-group">
-            <label for="source">From:</label>
-            <select name="source" id="source" required>
-                <option value="" disabled selected>Select Source</option>
-                {% for loc in locations %}
-                <option value="{{ loc }}">{{ loc }}</option>
-                {% endfor %}
-            </select>
+<section class="search-panel">
+    <form id="search-form" action="{{ url_for('search') }}" method="POST">
+        <div class="search-form-row">
+            <div class="form-group">
+                <label for="source">FROM</label>
+                <div class="input-with-icon">
+                    <i data-lucide="map-pin"></i>
+                    <select name="source" id="source" class="form-control" required>
+                        <option value="" disabled selected>Select starting location</option>
+                        {% for loc in locations %}
+                        <option value="{{ loc }}">{{ loc }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <button type="button" id="swap-btn" class="swap-btn" aria-label="Swap locations" title="Swap locations">
+                <i data-lucide="arrow-right-left"></i>
+            </button>
+            
+            <div class="form-group">
+                <label for="destination">TO</label>
+                <div class="input-with-icon">
+                    <i data-lucide="map"></i>
+                    <select name="destination" id="destination" class="form-control" required>
+                        <option value="" disabled selected>Select destination</option>
+                        {% for loc in locations %}
+                        <option value="{{ loc }}">{{ loc }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
         </div>
         
-        <div class="form-group">
-            <label for="destination">To:</label>
-            <select name="destination" id="destination" required>
-                <option value="" disabled selected>Select Destination</option>
-                {% for loc in locations %}
-                <option value="{{ loc }}">{{ loc }}</option>
-                {% endfor %}
-            </select>
+        <div style="margin-top: 24px; text-align: center;">
+            <button type="submit" class="btn btn-primary search-submit-btn">
+                <i data-lucide="search"></i>
+                Find Routes
+            </button>
         </div>
-        
-        <button type="submit" class="btn-primary">Find Routes</button>
     </form>
-</div>
+</section>
+
+<section class="quick-info-grid">
+    <div class="info-card">
+        <div class="info-icon">
+            <i data-lucide="route"></i>
+        </div>
+        <h3>Available Routes</h3>
+        <p>Multiple route options connecting key destinations across the city.</p>
+    </div>
+    
+    <div class="info-card">
+        <div class="info-icon">
+            <i data-lucide="zap"></i>
+        </div>
+        <h3>Smart Comparison</h3>
+        <p>Easily identify the fastest and cheapest options for your journey.</p>
+    </div>
+    
+    <div class="info-card">
+        <div class="info-icon">
+            <i data-lucide="map-pinned"></i>
+        </div>
+        <h3>Interactive Maps</h3>
+        <p>Visualize your journey with detailed routing and distance tracking.</p>
+    </div>
+</section>
 {% endblock %}
