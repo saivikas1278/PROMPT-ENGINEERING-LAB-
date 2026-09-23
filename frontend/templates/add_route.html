@@ -1,47 +1,49 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="page-header" style="margin-top: 24px;">
+    <h2>Add New Route</h2>
+    <a href="/admin/routes" class="btn btn-secondary">Cancel</a>
+</div>
+
 <div class="search-card" style="max-width: 600px; margin: 0 auto;">
-    <h2 style="color: var(--primary); margin-bottom: 20px;">Add New Route</h2>
-    
     <form action="/admin/routes/add" method="POST">
         <div class="form-group">
-            <label for="bus_number">Bus Number:</label>
-            <input type="text" name="bus_number" id="bus_number" required>
+            <label for="bus_number" class="form-label">Bus Number</label>
+            <input type="text" id="bus_number" name="bus_number" class="form-control" required placeholder="e.g. 101">
         </div>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
             <div class="form-group">
-                <label for="source">Source:</label>
-                <input type="text" name="source" id="source" required>
+                <label for="source" class="form-label">Source</label>
+                <input type="text" id="source" name="source" class="form-control" required placeholder="Starting point">
             </div>
             
             <div class="form-group">
-                <label for="destination">Destination:</label>
-                <input type="text" name="destination" id="destination" required>
+                <label for="destination" class="form-label">Destination</label>
+                <input type="text" id="destination" name="destination" class="form-control" required placeholder="Ending point">
             </div>
         </div>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
             <div class="form-group">
-                <label for="distance">Distance (km):</label>
-                <input type="number" step="0.1" min="0.1" name="distance" id="distance" required>
+                <label for="distance" class="form-label">Distance (km)</label>
+                <input type="number" id="distance" name="distance" class="form-control" step="0.1" min="0" required>
             </div>
             
             <div class="form-group">
-                <label for="travel_time">Travel Time (min):</label>
-                <input type="number" min="1" name="travel_time" id="travel_time" required>
+                <label for="travel_time" class="form-label">Time (min)</label>
+                <input type="number" id="travel_time" name="travel_time" class="form-control" min="0" required>
             </div>
             
             <div class="form-group">
-                <label for="fare">Fare (₹):</label>
-                <input type="number" step="0.5" min="0" name="fare" id="fare" required>
+                <label for="fare" class="form-label">Fare (₹)</label>
+                <input type="number" id="fare" name="fare" class="form-control" step="0.1" min="0" required>
             </div>
         </div>
         
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button type="submit" class="btn-primary" style="flex: 1;">Save Route</button>
-            <a href="/admin/routes" class="btn-primary" style="flex: 1; background-color: var(--dark); text-align: center; text-decoration: none;">Cancel</a>
+        <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+            <button type="submit" class="btn btn-primary">Save Route</button>
         </div>
     </form>
 </div>

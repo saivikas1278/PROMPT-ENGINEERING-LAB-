@@ -1,37 +1,72 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="search-card" style="max-width: 600px; margin: 0 auto;">
-    <h2 style="color: var(--primary); text-align: center; margin-bottom: 20px;">Bus No: {{ route.bus_number }}</h2>
-    
-    <div style="background: var(--gray-100); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-        <p><strong>From:</strong><br>{{ route.source }}</p>
-        <p><strong>To:</strong><br>{{ route.destination }}</p>
+<div class="page-header" style="margin-top: 24px;">
+    <h2>Route Details</h2>
+    <a href="javascript:history.back()" class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to Routes
+    </a>
+</div>
+
+<div class="details-card">
+    <div class="details-header">
+        <h2>Bus {{ route.bus_number }}</h2>
+        <p>{{ route.source }} to {{ route.destination }}</p>
     </div>
     
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-        <div>
-            <p><strong>Distance:</strong><br>{{ route.distance }} km</p>
-            <p><strong>Travel Time:</strong><br>{{ route.travel_time }} minutes</p>
+    <div class="details-body">
+        <div class="stats-grid">
+            <div class="metric">
+                <span class="metric-label">Distance</span>
+                <span class="metric-val" style="font-size: 1.5rem;">{{ route.distance }} <span style="font-size: 1rem; color: var(--muted); font-weight: 500;">km</span></span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Travel Time</span>
+                <span class="metric-val" style="font-size: 1.5rem;">{{ route.travel_time }} <span style="font-size: 1rem; color: var(--muted); font-weight: 500;">min</span></span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Fare</span>
+                <span class="metric-val" style="font-size: 1.5rem; color: var(--success);">₹{{ route.fare }}</span>
+            </div>
         </div>
-        <div>
-            <p><strong>Fare:</strong><br>₹{{ route.fare }}</p>
-        </div>
-    </div>
-    
-    <div style="margin-bottom: 30px;">
-        <h3>Stops:</h3>
-        <ol style="color: var(--dark); line-height: 1.8;">
-            <li>{{ route.source }}</li>
+        
+        <h3 style="margin-bottom: 24px;">Journey Summary</h3>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-marker">
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--primary);"></div>
+                </div>
+                <div class="timeline-content">
+                    <p class="text-muted" style="font-size: 0.8rem; margin: 0 0 4px; font-weight: 600; text-transform: uppercase;">Departure</p>
+                    <h4>{{ route.source }}</h4>
+                </div>
+            </div>
+            
             {% if "SRKR" in route.source and "Bhimavaram" in route.destination %}
-            <li>Vishnupuram</li>
+            <div class="timeline-item">
+                <div class="timeline-marker">
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--muted);"></div>
+                </div>
+                <div class="timeline-content" style="background-color: var(--surface-alt); border: none; box-shadow: none;">
+                    <p class="text-muted" style="font-size: 0.8rem; margin: 0 0 4px; font-weight: 600; text-transform: uppercase;">Intermediate Stop</p>
+                    <h4 style="color: var(--muted);">Vishnupuram</h4>
+                </div>
+            </div>
             {% endif %}
-            <li>{{ route.destination }}</li>
-        </ol>
-    </div>
-    
-    <div style="text-align: center;">
-        <a href="javascript:history.back()" class="btn-primary" style="text-decoration: none; display: inline-block; width: auto;">Back to Routes</a>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker destination">
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background-color: #fff;"></div>
+                </div>
+                <div class="timeline-content">
+                    <p class="text-muted" style="font-size: 0.8rem; margin: 0 0 4px; font-weight: 600; text-transform: uppercase;">Arrival</p>
+                    <h4>{{ route.destination }}</h4>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </div>
 {% endblock %}

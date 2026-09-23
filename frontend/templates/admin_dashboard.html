@@ -1,27 +1,50 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-    <h2>Admin Dashboard</h2>
-    <a href="{{ url_for('admin_logout') }}" class="btn-primary" style="background-color: var(--danger); width: auto; padding: 8px 16px; text-decoration: none;">Logout</a>
+<div class="page-header" style="margin-top: 24px;">
+    <div>
+        <h2 style="margin-bottom: 4px;">Admin Dashboard</h2>
+        <p class="text-muted" style="margin: 0;">Manage public transport routes and locations</p>
+    </div>
+    <a href="{{ url_for('admin_logout') }}" class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        Logout
+    </a>
 </div>
 
-<div class="summary-cards">
-    <div class="summary-card" style="border-top-color: var(--primary);">
-        <div class="badge">TOTAL ROUTES</div>
-        <h3>{{ total_routes }}</h3>
+<div class="admin-stats">
+    <div class="stat-card">
+        <div class="stat-icon" style="color: var(--primary); background: #e0f2fe;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="8" y2="17"></line><line x1="16" y1="21" x2="16" y2="17"></line><line x1="2" y1="9" x2="22" y2="9"></line></svg>
+        </div>
+        <div class="stat-info">
+            <div class="label">Total Routes</div>
+            <h3 class="value">{{ total_routes }}</h3>
+        </div>
     </div>
-    <div class="summary-card" style="border-top-color: var(--success);">
-        <div class="badge">TOTAL LOCATIONS</div>
-        <h3>{{ total_locations }}</h3>
+    <div class="stat-card">
+        <div class="stat-icon" style="color: var(--success); background: #dcfce7;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        </div>
+        <div class="stat-info">
+            <div class="label">Total Locations</div>
+            <h3 class="value">{{ total_locations }}</h3>
+        </div>
     </div>
 </div>
 
-<div class="search-card" style="margin-top: 30px; text-align: center;">
-    <h3>Quick Actions</h3>
-    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
-        <a href="/admin/routes/add" class="btn-primary" style="width: auto; text-decoration: none;">Add Route</a>
-        <a href="/admin/routes" class="btn-primary" style="width: auto; background-color: var(--dark); text-decoration: none;">View Routes</a>
+<div class="search-card" style="text-align: center; max-width: none;">
+    <h3>Route Management</h3>
+    <p class="text-muted" style="margin-bottom: 24px;">Add new routes or modify existing ones.</p>
+    <div style="display: flex; gap: 16px; justify-content: center;">
+        <a href="/admin/routes/add" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add New Route
+        </a>
+        <a href="/admin/routes" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            View All Routes
+        </a>
     </div>
 </div>
 {% endblock %}
